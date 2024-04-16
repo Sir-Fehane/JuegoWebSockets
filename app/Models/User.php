@@ -19,10 +19,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->morphMany(PersonalAccessToken::class, 'tokenable');
     }
 
-    public function rol()
-    {
-        return $this->belongsTo(roles::class,'rol');
-    }
+    
     
 
     

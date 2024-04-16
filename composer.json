@@ -13,7 +13,6 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "3.0",
-        "mongodb/laravel-mongodb": "3.9",
         "pusher/pusher-php-server": "^7.2",
         "tymon/jwt-auth": "^2.1"
     },
