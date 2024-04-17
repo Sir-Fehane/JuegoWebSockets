@@ -18,6 +18,8 @@ use App\Http\Controllers\usuarioscontroller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\GameLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,4 +52,12 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     Route::get ('/activate/{token}', [AuthController::class ,'activate'])->name('activate');
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('/games', [GameController::class, 'createGame']);
+    Route::post('/games/{gameId}/join', [GameController::class, 'joinGame']);
+    Route::put('/games/{gameId}/score', [GameController::class, 'updateScore']);
+    Route::put('/games/{gameId}/finish', [GameController::class, 'finishGame']);
+    Route::post('/game-logs', [GameLogController::class, 'logEvent']);
 });
