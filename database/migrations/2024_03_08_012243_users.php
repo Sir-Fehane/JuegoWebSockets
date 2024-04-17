@@ -20,7 +20,10 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->unsignedBigInteger('rol')->default(1);
             $table->boolean('is_active')->default(0);
+            $table->boolean('can_access_page')->default(0);
+            $table->foreign('rol')->references('id')->on('roles');
         });
     }
 

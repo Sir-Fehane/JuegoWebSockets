@@ -178,7 +178,7 @@ class AuthController extends Controller
             $token = $this->respondWithToken($jwt);
             
             // Se marca el codigo como condon usado
-            //$verificationCode->markAsUsed();
+            $verificationCode->markAsUsed();
             
             return response()->json([
                 'message' => 'Código de verificación correcto.',
