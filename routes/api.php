@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameLogController;
+use App\Http\Controllers\RoomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,3 +62,17 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/games/{gameId}/finish', [GameController::class, 'finishGame']);
     Route::post('/game-logs', [GameLogController::class, 'logEvent']);
 });
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('/rooms', [RoomController::class, 'create']);
+    Route::post('/rooms/{room}/join', [RoomController::class, 'join']);
+    Route::get('/rooms/waiting', [RoomController::class, 'getWaitingRooms']);
+    Route::delete('/rooms/{room}/player1', [RoomController::class, 'playerOneLeft']);
+    Route::delete('/rooms/{room}/player2', [RoomController::class, 'playerTwoLeft']);
+    Route::delete('/rooms/{room}/both', [RoomController::class, 'bothPlayersLeft']);
+    Route::post('/rooms/{room}/start', [RoomController::class, 'startGame']);
+    Route::put('/rooms/{room}/scores', [RoomController::class, 'updateScores']);
+    Route::get('/rooms/{room}/winner', [RoomController::class, 'determineWinner']);
+    Route::delete('/rooms/{room}', [RoomController::class, 'deleteRoom']);
+});
+
