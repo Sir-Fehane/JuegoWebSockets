@@ -8,10 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use App\Models\roles;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
+
     protected $table = 'users';
     public $timestamps = false;
     public function tokens()
@@ -20,7 +22,10 @@ class User extends Authenticatable implements JWTSubject
     }
 
     
-    
+    public function rol()
+    {
+        return $this->belongsTo(roles::class,'rol');
+    }
 
     
     /**
