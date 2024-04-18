@@ -63,7 +63,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/game-logs', [GameLogController::class, 'logEvent']);
 });
 
-Route::middleware('auth:api')->group(function () {
+
     Route::post('/rooms', [RoomController::class, 'create']);
     Route::post('/rooms/{room}/join', [RoomController::class, 'join']);
     Route::get('/rooms/waiting', [RoomController::class, 'getWaitingRooms']);
@@ -74,5 +74,5 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/rooms/{room}/scores', [RoomController::class, 'updateScores']);
     Route::get('/rooms/{room}/winner', [RoomController::class, 'determineWinner']);
     Route::delete('/rooms/{room}', [RoomController::class, 'deleteRoom']);
-});
+    Route::post('/playersby-room/{$id}', [RoomController::class, 'getPlayersByRoom']);
 

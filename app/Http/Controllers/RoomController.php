@@ -6,20 +6,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Pusher\Pusher;
 use App\Models\Room;
+use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RoomController extends Controller
 {
     public function create(Request $request)
     {
         // Crea una nueva sala con el jugador 1 como propietario
+        $user = JWTAuth::parseToken()->authenticate();
         $room = Room::create([
-            'player1_id' => Auth::id(),
+            'player1_id' => $user->id,
             'game_state' => Room::STATE_WAITING, // Establece el estado del juego como "waiting"
         ]);
 
         // Inicializa Pusher con las variables de entorno
-        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), [
-            'cluster' => env('PUSHER_APP_CLUSTER'),
+        $pusher = new Pusher("7db2609c0d8a52d0047e", "60af793630219bb7312f", "1789056", [
+            'cluster' => "us2",
             'useTLS' => true,
         ]);
 
@@ -40,8 +43,8 @@ class RoomController extends Controller
         $room->save();
 
         // Transmite un evento indicando que un jugador se ha unido a la sala
-        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), [
-            'cluster' => env('PUSHER_APP_CLUSTER'),
+        $pusher = new Pusher("7db2609c0d8a52d0047e", "60af793630219bb7312f", "1789056", [
+            'cluster' => "us2",
             'useTLS' => true,
         ]);
         $pusher->trigger('room-events', 'player-joined', $room);
@@ -84,8 +87,8 @@ class RoomController extends Controller
     // Método para transmitir eventos de sala utilizando Pusher
     private function broadcastRoomEvent(Room $room, string $eventName, $data)
     {
-        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), [
-            'cluster' => env('PUSHER_APP_CLUSTER'),
+        $pusher = new Pusher("7db2609c0d8a52d0047e", "60af793630219bb7312f", "1789056", [
+            'cluster' => "us2",
             'useTLS' => true,
         ]);
 
@@ -210,5 +213,26 @@ class RoomController extends Controller
 
         // Si el jugador no es ni el jugador 1 ni el jugador 2, devuelve un error
         return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    public function getPlayersByRoom(Request $request ,$id)
+    {
+        $room = Room::find($id);
+
+        if (!$room) {
+            return response()->json(['error' => 'Room not found'], 404);
+        }
+
+        $player1 = User::find($room->player1_id);
+        $player2 = User::find($room->player2_id);
+
+        $player1Name = $player1 ? $player1->name : 'Unknown';
+        $player2Name = $player2 ? $player2->name : 'Unknown';
+
+        return response()->json([
+            'room_id' => $room->id,
+            'player1_name' => $player1Name,
+            'player2_name' => $player2Name,
+        ]);
     }
 }
